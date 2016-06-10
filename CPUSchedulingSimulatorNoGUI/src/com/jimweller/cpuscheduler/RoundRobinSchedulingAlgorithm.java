@@ -14,38 +14,54 @@ public class RoundRobinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 
     /** the time slice each process gets */
     private int quantum;
-
+    Vector<Process> jobs;
+    
+    private int quanCounter;
+    private long turnCounter;
+    private int activeIndex;
+    private boolean priority;
+    
     RoundRobinSchedulingAlgorithm() {
         // Fill in this method
         /*------------------------------------------------------------*/
-
-
+        activeJob = null;
+        quantum = 10;
+        turnCounter = 0;
+        quanCounter = quantum;
+        activeIndex = -1;
+        priority = false;
+        jobs = new Vector<Process>();
 
         /*------------------------------------------------------------*/
     }
 
     /** Add the new job to the correct queue. */
     public void addJob(Process p) {
-        // Remove the next lines to start your implementation
-        throw new UnsupportedOperationException();
         
         // Fill in this method
         /*------------------------------------------------------------*/
 
-
+        jobs.add(p);
 
         /*------------------------------------------------------------*/
     }
 
     /** Returns true if the job was present and was removed. */
     public boolean removeJob(Process p) {
-        // Remove the next lines to start your implementation
-        throw new UnsupportedOperationException();
-        
         // Fill in this method
         /*------------------------------------------------------------*/
 
-
+        int jobIndex = jobs.indexOf(p);
+        boolean temp = jobs.remove(p);
+        if (activeIndex >= jobIndex && jobIndex >= 0)
+			--activeIndex;
+			try {
+				activeJob = jobs.get(activeIndex);
+			} catch (ArrayIndexOutOfBoundsException e) {
+				activeJob = null;
+			}
+		quanCounter = 0;
+		return temp;
 
         /*------------------------------------------------------------*/
     }
@@ -80,13 +96,38 @@ public class RoundRobinSchedulingAlgorithm extends BaseSchedulingAlgorithm {
      * available.
      */
     public Process getNextJob(long currentTime) {
-        // Remove the next lines to start your implementation
-        throw new UnsupportedOperationException();
-        
         // Fill in this method
         /*------------------------------------------------------------*/
 
+        Process p = null, nextJob = null;
+        	int index = 0;
+        
+        	--quanCounter;
+        
 
+        	if (activeIndex >= 0 && !isJobFinished() && quanCounter > 0) {
+        	    return activeJob;
+        	}
+        
+
+        	if (jobs.size() == 0){
+        	    activeIndex = -1;
+        	    return null;
+        	}
+        
+          index = (activeIndex >= (jobs.size() - 1) || activeIndex < 0) ? 0 : activeIndex+1;
+        	//if (activeIndex >= (jobs.size() - 1) || activeIndex < 0)
+        	//    index = 0;
+        	//else
+        	//    index = (activeIndex + 1);
+        
+        	nextJob = (Process) jobs.get(index);
+        	activeIndex = index;
+        
+        	quanCounter = quantum;
+        
+        	this.activeJob = nextJob;
+        	return nextJob;
 
         /*------------------------------------------------------------*/
     }

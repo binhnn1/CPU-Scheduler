@@ -12,37 +12,37 @@ import java.util.*;
 
 public class FCFSSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 
-    FCFSSchedulingAlgorithm(){
+	Vector<Process> jobs;
+    
+	FCFSSchedulingAlgorithm(){
+		
+		
         // Fill in this method
         /*------------------------------------------------------------*/
 
-
-
+		activeJob = null;
+		jobs = new Vector<Process>();
         /*------------------------------------------------------------*/
     }
-
+	
     /** Add the new job to the correct queue.*/
     public void addJob(Process p){
-        // Remove the next lines to start your implementation
-        throw new UnsupportedOperationException();
-        
         // Fill in this method
         /*------------------------------------------------------------*/
 
-
+    	jobs.add(p);
 
         /*------------------------------------------------------------*/
     }
     
     /** Returns true if the job was present and was removed. */
     public boolean removeJob(Process p){
-        // Remove the next lines to start your implementation
-        throw new UnsupportedOperationException();
-
         // Fill in this method
         /*------------------------------------------------------------*/
 
-
+		if (p == activeJob)
+			activeJob = null;
+		return jobs.remove(p);
 
         /*------------------------------------------------------------*/
     }
@@ -54,14 +54,22 @@ public class FCFSSchedulingAlgorithm extends BaseSchedulingAlgorithm {
     }
 
     /** Returns the next process that should be run by the CPU, null if none available.*/
-    public Process getNextJob(long currentTime){
-        // Remove the next lines to start your implementation
-        throw new UnsupportedOperationException();
-        
+    public Process getNextJob(long currentTime){        
         // Fill in this method
-        /*------------------------------------------------------------*/
-
-
+        /*------------------------------------------------------------*/    	
+    	Process p = null, returnJob = (Process) jobs.get(0);
+		long time = 0, arrivalTime = returnJob.getArrivalTime();
+		
+		for (int i = 0; i < jobs.size(); ++i) {
+			p = (Process) jobs.get(i);
+			time = p.getArrivalTime();
+			if (time < arrivalTime) {
+				arrivalTime = time;
+				returnJob = p;
+			}
+		}
+		activeJob = returnJob;
+		return activeJob;
 
         /*------------------------------------------------------------*/
     }
